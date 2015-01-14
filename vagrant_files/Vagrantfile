@@ -19,7 +19,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   config.vm.network :private_network, ip: '10.0.0.2'
-  config.vm.host_name = "master.mnit-mbp.kalon.local"
+  config.vm.host_name = "master.local"
 
   config.vm.synced_folder ".", "/home/vagrant/"
 
