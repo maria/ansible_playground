@@ -1,0 +1,47 @@
+- hosts: all
+  sudo: yes
+  tasks:
+   - name: ensure nginx is installed
+     apt: pkg=nginx state=present update_cache=yes
+   - name: ensure data directory is created
+     file: path=/data state=directory mode=777 recurse=yes
+   - name: ensure web directory is created
+     file: path=/data/www state=directory mode=777 recurse=yes
+   - name: ensure nginx config is added
+     template: src=/root/nginx.j2 dest=/etc/nginx/nginx.conf
+   - name: ensure nginx is started
+     service: name=nginx state=started
+
+- hosts: puppy
+  sudo: yes
+  vars: 
+    baby: puppy
+  tasks:
+    - name: ensure puppy grup is present 
+      group: name=puppy state=present
+    - name: ensure puppy user is present
+      user: name=puppy state=present group=puppy 
+    - name: ensure image is present
+      copy: src=/root/puppy.jpg dest=/data/www/puppy.jpg 
+               owner=puppy group=puppy mode=664
+    - name: ensure html template is added
+      template: src=/root/index.j2 dest=/data/www/index.html
+      notify: 
+         - restart nginx
+
+- hosts: kitty
+  sudo: yes
+  vars:
+    baby: kitty
+  tasks: 
+    - name: ensure kitty grup is present 
+      group: name=kitty state=present
+    - name: ensure kitty user is present
+      user: name=kitty state=present group=kitty
+    - name: ensure image is present
+      copy: src=/root/kitty.jpg dest=/data/www/kitty.jpg
+               owner=kitty group=kitty mode=664
+    - name: ensure html template is added
+      template: src=/root/index.j2 dest=/data/www/index.html
+      notify: 
+        - restart nginx
